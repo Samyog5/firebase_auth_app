@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_series/forgotpassword.dart';
 import 'package:firebase_series/main.dart';
+import 'package:firebase_series/phoneauthpage.dart';
 import 'package:firebase_series/signuppage.dart';
 import 'package:firebase_series/ui_helper.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,10 @@ class _LoginPageState extends State<LoginPage> {
           UiHelper.CustomButton((){
             login(emailController.text.toString(), passwordController.text.toString());
           }, 'Login'),
+          SizedBox(height: 10,),
+          UiHelper.CustomButton(() {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => PhoneAuthPage()));
+          }, 'Continue with Phone'),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
