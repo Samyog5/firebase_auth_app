@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_series/checkuser.dart';
 import 'package:firebase_series/loginpage.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_series/ui_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,17 +44,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
+// logout loic 
   logOut() async{
     FirebaseAuth.instance.signOut().then((onValue){
       Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()));
@@ -97,14 +88,14 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: .center,
           children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            const Text('Press Logout button to logout from the app'),
+            UiHelper.CustomButton((){
+              logOut();
+            }, 'Logout'),
           ],
         ),
       ),
+      
       floatingActionButton: FloatingActionButton(
         onPressed: logOut,
         tooltip: 'Increment',

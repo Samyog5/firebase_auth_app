@@ -5,21 +5,56 @@ import 'package:firebase_series/main.dart';
 import 'package:flutter/material.dart';
 
 class OtpScreen extends StatefulWidget {
-  String verificationid;
-  OtpScreen({super.key, required this.verificationid});
+  final String verificationId;
+
+  const OtpScreen({
+    super.key,
+    required this.verificationId,
+  });
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  TextEditingController otpcontroller = TextEditingController();
+  final TextEditingController otpController = TextEditingController();
+
+  @override
+  void dispose() {
+    otpController.dispose();
+    super.dispose();
+  }
+
+  Future<void> verifyOtp() async {
+    if (otpController.text.trim().isEmpty) return;
+
+    try {
+      final credential = PhoneAuthProvider.credential(
+        verificationId: widget.verificationId,
+        smsCode: otpController.text.trim(),
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => MyHomePage(title: 'Welcome Back'),
+        ),
+      );
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        title: Text('OTP Screen'),
+        title: const Text('OTP Screen'),
         centerTitle: true,
       ),
       body: Column(
@@ -28,29 +63,22 @@ class _OtpScreenState extends State<OtpScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: TextField(
-              controller: otpcontroller,
-              keyboardType: TextInputType.phone,
+              controller: otpController,
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 hintText: 'Enter the OTP',
-                suffixIcon: Icon(Icons.phone),
+                suffixIcon: const Icon(Icons.phone),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24)
-                )
+                  borderRadius: BorderRadius.circular(24),
+                ),
               ),
             ),
           ),
-          SizedBox(height: 30,),
-          ElevatedButton(onPressed: ()async{
-            try{
-              PhoneAuthCredential credential =  await PhoneAuthProvider.credential(verificationId: widget.verificationid, smsCode: otpcontroller.text.toString());
-              FirebaseAuth.instance.signInWithCredential(credential).then((value){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> MyHomePage(title: 'Welcome Back')));
-
-              });
-            }catch(ex){
-              log(ex.toString());
-            }
-            }, child: Text('Verify OTP'))
+          const SizedBox(height: 30),
+          ElevatedButton(
+            onPressed: verifyOtp,
+            child: const Text('Verify OTP'),
+          ),
         ],
       ),
     );

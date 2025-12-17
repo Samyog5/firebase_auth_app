@@ -17,7 +17,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       return UiHelper.CustomAlertBox(context, 'Enter an email to reset password');
     }
     else{
-      FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      FirebaseAuth.instance.sendPasswordResetEmail(email: email).then((onValue){
+        UiHelper.CustomAlertBox(context, 'Reset link has been sent successfully');
+      });
     }
   }
   @override
